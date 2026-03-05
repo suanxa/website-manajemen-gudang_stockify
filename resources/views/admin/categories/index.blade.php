@@ -32,10 +32,25 @@
         </div>
     </div>
 
-    {{-- Alert Notifikasi --}}
+   {{-- Alert Notifikasi --}}
     @if(session('success'))
         <div class="p-4 mb-6 text-sm text-green-800 rounded-2xl bg-green-50 dark:bg-gray-800 dark:text-green-400 border border-green-200 flex items-center animate-fade-in">
             <i class="fas fa-check-circle mr-3 text-lg"></i> {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- GACOR: Tambahkan Blok Validation Errors di Sini --}}
+    @if($errors->any())
+        <div class="p-4 mb-6 text-sm text-red-800 rounded-2xl bg-red-50 dark:bg-gray-800 dark:text-red-400 border border-red-200 animate-fade-in">
+            <div class="flex items-center mb-2">
+                <i class="fas fa-exclamation-circle mr-3 text-lg"></i>
+                <span class="font-black uppercase tracking-tight">Gagal Simpan Data:</span>
+            </div>
+            <ul class="list-disc pl-8 font-bold">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -44,7 +59,6 @@
             <i class="fas fa-exclamation-triangle mr-3 text-lg"></i> {{ session('error') }}
         </div>
     @endif
-
     {{-- Table Section --}}
     <div class="overflow-hidden bg-white dark:bg-gray-800 rounded-[2.5rem] shadow-sm border border-cream-200 dark:border-gray-700">
         <div class="overflow-x-auto">

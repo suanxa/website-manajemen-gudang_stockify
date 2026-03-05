@@ -50,7 +50,23 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 // 2. PRODUK 
 Route::prefix('products')->name('products.')->group(function () {
-    // --- Rute Khusus (Letakkan di Atas agar tidak bentrok dengan {id}) ---
+    
+    // --- 2.1. KATEGORI (PINDAHKAN KE ATAS) ---
+    Route::prefix('categories')->name('categories.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::post('/store', [CategoryController::class, 'store'])->name('store'); // Ubah '/' jadi '/store'
+        Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+    });
+
+    // --- 2.2. ATRIBUT (PINDAHKAN KE ATAS) ---
+    Route::prefix('attributes')->name('attributes.')->group(function () {
+        Route::get('/', [AttributeController::class, 'index'])->name('index');
+        Route::post('/store', [AttributeController::class, 'store'])->name('store'); // Ubah '/' jadi '/store'
+        Route::delete('/{id}', [AttributeController::class, 'destroy'])->name('destroy');
+    });
+
+    // --- Rute Khusus Produk ---
     Route::get('/trash', [ProductController::class, 'trash'])->name('trash');
     Route::get('/import-export', [ProductController::class, 'importExportView'])->name('import-export');
     Route::post('/import', [ProductController::class, 'import'])->name('import');
@@ -58,30 +74,14 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/template', [ProductController::class, 'template'])->name('template');
     Route::get('/products-gallery', [ReportController::class, 'productGallery'])->name('gallery');
 
-    // --- Rute CRUD Produk Utama ---
+    // --- Rute CRUD Produk Utama (TARUH PALING BAWAH) ---
     Route::get('/', [ProductController::class, 'index'])->name('index');
     Route::post('/', [ProductController::class, 'store'])->name('store');
     Route::post('/{id}', [ProductController::class, 'update'])->name('update');
     Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
     Route::post('/{id}/restore', [ProductController::class, 'restore'])->name('restore');
     Route::delete('/{id}/force-delete', [ProductController::class, 'forceDelete'])->name('force-delete');
-
-    // --- 2.1. KATEGORI (Sekarang URL-nya jadi admin/products/categories) ---
-    Route::prefix('categories')->name('categories.')->group(function () {
-        Route::get('/', [CategoryController::class, 'index'])->name('index');
-        Route::post('/', [CategoryController::class, 'store'])->name('store');
-        Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
-        Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
-    });
-
-    // --- 2.2. ATRIBUT (Sekarang URL-nya jadi admin/products/attributes) ---
-    Route::prefix('attributes')->name('attributes.')->group(function () {
-        Route::get('/', [AttributeController::class, 'index'])->name('index');
-        Route::post('/', [AttributeController::class, 'store'])->name('store');
-        Route::delete('/{id}', [AttributeController::class, 'destroy'])->name('destroy');
-    });
 });
-
     // 3. PENGIRIM 
     Route::prefix('suppliers')->name('suppliers.')->group(function () {
     Route::get('/', [SupplierController::class, 'index'])->name('index');
